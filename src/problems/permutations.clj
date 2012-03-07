@@ -19,7 +19,7 @@
     (if (= 2 len)
       [s, (cs/reverse s)]
       (let [[head, tail] (break-str-at s 1)
-            perms (permutations-by-inject tail)]
+            perms (permutations-by-inject-recursive tail)]
         (flatten (map #(inject-at-all-pos % head)
                       perms))))))
 
@@ -28,7 +28,7 @@
     (if (= 2 len)
       [s, (cs/reverse s)]
       (let [[head, tail] (break-str-at s 1)
-            tail-perms (permutations-by-inject-faster tail)]
+            tail-perms (permutations-by-inject-recursive-faster tail)]
         (loop [tperms tail-perms
                all-perms []]
           (let [p (first tperms)]
@@ -44,7 +44,7 @@
            rem tail]
       (let [char (first rem)]
         (if char
-          (recur (into [] (flatten (map #(inject-at-all-pos % char) perms)))
+          (recur (vec (flatten (map #(inject-at-all-pos % char) perms)))
                  (next rem))
           perms)))))
 
