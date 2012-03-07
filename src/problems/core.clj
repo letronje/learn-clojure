@@ -7,5 +7,7 @@
   (let [s "abcdefghi"
         l (.length s)
         expected-perms (reduce * (range 1 (inc l))) ]
-    (time  (println (count  (permutations s))))
-    (time  (println (count  (faster-permutations s))))))
+    (time  (println (count  (permutations-by-inject-recursive s))))
+    (time  (println (count  (permutations-by-inject-recursive-faster s))))
+    (time  (println (count  (permutations-by-inject-iterative s))))
+    (time  (println (count  (permutations-by-inject-iterative-faster s))))))

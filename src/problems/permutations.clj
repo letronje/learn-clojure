@@ -14,21 +14,21 @@
     (map #(str (% 0) c (% 1))
          pieces)))
 
-(defn permutations [^String s]
+(defn permutations-by-inject-recursive [^String s]
   (let [len (.length s)]
     (if (= 2 len)
       [s, (cs/reverse s)]
       (let [[head, tail] (break-str-at s 1)
-            perms (permutations tail)]
+            perms (permutations-by-inject tail)]
         (flatten (map #(inject-at-all-pos % head)
                       perms))))))
 
-(defn faster-permutations [^String s]
+(defn permutations-by-inject-recursive-faster [^String s]
   (let [len (.length s)]
     (if (= 2 len)
       [s, (cs/reverse s)]
       (let [[head, tail] (break-str-at s 1)
-            tail-perms (faster-permutations tail)]
+            tail-perms (permutations-by-inject-faster tail)]
         (loop [tperms tail-perms
                all-perms []]
           (let [p (first tperms)]
@@ -37,3 +37,29 @@
                      (into all-perms
                            (inject-at-all-pos p head)))
               all-perms)))))))
+
+(defn permutations-by-inject-iterative [^String s]
+  (let [[head, tail] (break-str-at s 2)]
+    (loop [perms [head, (cs/reverse head)]
+           rem tail]
+      (let [char (first rem)]
+        (if char
+          (recur (into [] (flatten (map #(inject-at-all-pos % char) perms)))
+                 (next rem))
+          perms)))))
+
+(defn permutations-by-inject-iterative-faster [^String s]
+  (let [[head, tail] (break-str-at s 2)]
+    (loop [perms [head, (cs/reverse head)]
+           rem tail]
+      (let [char (first rem)]
+        (if char
+          (let [new-perms (loop [acc []
+                                 p perms]
+                            (let [fp (first p)]
+                              (if fp
+                                (recur (into acc (inject-at-all-pos fp char)) (next p))
+                                acc)))]
+            (recur new-perms (next rem)))
+          perms)))))
+
