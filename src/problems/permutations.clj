@@ -44,17 +44,20 @@
                   j char1)]
     (apply str swapped)))
 
+(defn- str-swap-chars-at! [^String s, ^long i, ^long j]
+  (let [chars (.toCharArray s)
+        char1 (aget chars i)
+        char2 (aget chars j)]
+    (aset chars i char2)
+    (aset chars j char1)
+    (apply str chars)))
+
 (defn- swaps [^String s, ^long i]
-  (map #(str-swap-chars-at s i %)
+  (map #(str-swap-chars-at! s i %)
        (range (inc i) (.length s))))
 
-(defn permutations-by-swap-iterative [^String s]
-  (let [n (dec (.length s))]
-       (loop [perms [s]
-              i 0]
-         (if (> i n)
-           perms
-           (recur (into perms
-                        (reduce #(into %1 %2) []
-                                (map #(swaps % i) perms)))
-                  (inc i))))))
+(defn manoj [^String s]
+  (reduce (fn [perms, i]
+            (reduce #(into %1 %2) perms
+                    (map #(swaps % i) perms))
+            ) [s] (range 0 (.length s))))
