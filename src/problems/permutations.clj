@@ -56,8 +56,8 @@
   (map #(str-swap-chars-at! s i %)
        (range (inc i) (.length s))))
 
-(defn manoj [^String s]
-  (reduce (fn [perms, i]
+(defn permutations-by-swap-iterative [^String s]
+  (reduce (fn [perms, ^long i]
             (reduce #(into %1 %2) perms
-                    (map #(swaps % i) perms))
+                    (map #(swaps % i) perms)) 
             ) [s] (range 0 (.length s))))
